@@ -11,6 +11,7 @@ app.on('ready', () => {
     //frame: false;
   });
   mainWindow.loadURL(`file://${__dirname}/main.html`);
+  mainWindow.on('closed', () => app.quit());
 
   const mainMenu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(mainMenu);
@@ -22,6 +23,8 @@ function createAddWindow() {
     height: 200,
     title: 'Add New Todo'
   });
+  addWindow.loadURL(`file://${__dirname}/add.html`);
+
 }
 const menuTemplate = [
   {
@@ -43,4 +46,19 @@ const menuTemplate = [
 
 if (process.platform === 'darwin') {
   menuTemplate.unshift({});
+}
+
+if (process.env.NODE_ENV !== 'production') {
+  menuTemplate.push({
+    label: 'View',
+    submenu: [
+      {
+        label: 'Toggle Developer Tools',
+        accelerator: process.platform === 'darwin' ? 'Command+Alt+I' : 'Ctrl+Shift+I',
+        click(item, focusedWindow) {
+          focusedWindow.toggleDevTools();
+        }
+      }
+    ]
+  });
 }
